@@ -1,23 +1,16 @@
-import { ITime } from './i-time';
+import { TimeBase } from './base';
+import { TimeGranularity } from './granularity';
 
-export enum TimeGranularity {
-    minute = 'minute',
-    hour = 'hour',
-    day = 'day',
-    week = 'week',
-    month = 'month',
-    year = 'year',
-}
-
-export class DateTime implements ITime {
-    public isSameUnix(leftUnix: number, rightUnix: number, granularity?: any) {
-        granularity ??= TimeGranularity.day;
+export class DateTime extends TimeBase {
+    public isSameUnix(leftUnix: number, rightUnix: number, granularity?: TimeGranularity) {
         const left = this.startOf(leftUnix, granularity);
         const right = this.startOf(rightUnix, granularity);
         return left.getTime() == right.getTime();
     }
 
-    private startOf(unix: number, granularity: any) {
+    public startOf(unix: number, granularity?: TimeGranularity) {
+        granularity ??= TimeGranularity.day;
+
         const date = new Date(unix * 1000);
         switch (granularity) {
             case TimeGranularity.day:
@@ -44,6 +37,12 @@ export class DateTime implements ITime {
                 break;
         }
         return date;
+    }
+
+    public startOfUnix(unix: number, granularity: TimeGranularity) {
+        return Math.floor(
+            this.startOf(unix, granularity).getTime() / 1000
+        );
     }
 
     private startOfMonth(date: Date) {

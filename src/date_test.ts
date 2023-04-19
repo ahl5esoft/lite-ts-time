@@ -1,7 +1,8 @@
 import { strictEqual } from 'assert';
 import moment from 'moment';
 
-import { DateTime, TimeGranularity } from './date';
+import { DateTime } from './date';
+import { TimeGranularity } from './granularity';
 
 moment.locale('en', {
     week: {
@@ -10,7 +11,7 @@ moment.locale('en', {
 });
 
 describe('src/date.ts', () => {
-    describe('.isSameUnix(leftUnix: number, rightUnix: number, granularity?: any)', () => {
+    describe('.isSameUnix(leftUnix: number, rightUnix: number, granularity?: TimeGranularity)', () => {
         it('ok', () => {
             const self = new DateTime();
             const now = moment();
@@ -22,12 +23,11 @@ describe('src/date.ts', () => {
         });
     });
 
-    describe('startOf(unix: number, granularity: any)', () => {
+    describe('startOf(unix: number, granularity: TimeGranularity)', () => {
         it(TimeGranularity.day, () => {
             const self = new DateTime();
-            const fn = Reflect.get(self, 'startOf').bind(self) as (_: number, __: any) => Date;
             const now = moment();
-            const left = fn(
+            const left = self.startOf(
                 now.unix(),
                 TimeGranularity.day,
             );
@@ -39,9 +39,8 @@ describe('src/date.ts', () => {
 
         it(TimeGranularity.hour, () => {
             const self = new DateTime();
-            const fn = Reflect.get(self, 'startOf').bind(self) as (_: number, __: any) => Date;
             const now = moment();
-            const left = fn(
+            const left = self.startOf(
                 now.unix(),
                 TimeGranularity.hour,
             );
@@ -53,9 +52,8 @@ describe('src/date.ts', () => {
 
         it(TimeGranularity.minute, () => {
             const self = new DateTime();
-            const fn = Reflect.get(self, 'startOf').bind(self) as (_: number, __: any) => Date;
             const now = moment();
-            const left = fn(
+            const left = self.startOf(
                 now.unix(),
                 TimeGranularity.minute,
             );
@@ -67,9 +65,8 @@ describe('src/date.ts', () => {
 
         it(TimeGranularity.week, () => {
             const self = new DateTime();
-            const fn = Reflect.get(self, 'startOf').bind(self) as (_: number, __: any) => Date;
             const now = moment();
-            const left = fn(
+            const left = self.startOf(
                 now.unix(),
                 TimeGranularity.week,
             );
@@ -81,15 +78,29 @@ describe('src/date.ts', () => {
 
         it(TimeGranularity.year, () => {
             const self = new DateTime();
-            const fn = Reflect.get(self, 'startOf').bind(self) as (_: number, __: any) => Date;
             const now = moment();
-            const left = fn(
+            const left = self.startOf(
                 now.unix(),
                 TimeGranularity.year,
             );
             strictEqual(
                 left.getTime(),
                 now.startOf('year').valueOf(),
+            );
+        });
+    });
+
+    describe('.startOfUnix(unix: number, granularity?: TimeGranularity)', () => {
+        it('ok', () => {
+            const self = new DateTime();
+            const now = moment();
+            const res = self.startOfUnix(
+                now.unix(),
+                TimeGranularity.week
+            );
+            strictEqual(
+                res,
+                now.startOf('week').unix(),
             );
         });
     });

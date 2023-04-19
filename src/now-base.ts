@@ -1,11 +1,12 @@
-import { ITime } from './i-time';
+import { TimeBase } from './base';
+import { TimeGranularity } from './granularity';
 
 export abstract class NowTimeBase {
     public constructor(
-        private m_Time: ITime,
+        private m_Time: TimeBase,
     ) { }
 
-    public async isSameUnix(unix: number, granularity?: any) {
+    public async isSameUnix(unix: number, granularity?: TimeGranularity) {
         const nowUnix = await this.unix();
         return this.m_Time.isSameUnix(nowUnix, unix, granularity);
     }
